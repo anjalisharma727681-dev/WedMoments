@@ -138,23 +138,25 @@ class MainActivity : ComponentActivity() {
                                 repository = repository,
                                 onCreatorClick = { creator ->
                                     selectedCreator = creator
-                                    navController.navigate("portfolio")
+                                    navController.navigate("creatorProfile")
                                 },
                                 onMyWeddingClick = { navController.navigate("myWedding") },
                                 onProfileClick = { navController.navigate("profile") }
                             )
                         }
 
-                        composable("portfolio") {
+                        composable("creatorProfile") {
                             val creator = selectedCreator
                             if (creator == null) {
                                 LaunchedEffect(Unit) { navController.popBackStack() }
                             } else {
-                                CreatorPortfolioScreen(
+                                CreatorProfileScreen(
                                     creator = creator,
                                     repository = repository,
                                     onBackClick = { navController.popBackStack() },
-                                    onBookClick = { navController.navigate("packages") }
+                                    onBookClick = { navController.navigate("packages") },
+                                    onGalleryClick = { navController.navigate("gallery") },
+                                    onReviewsClick = { navController.navigate("reviews") }
                                 )
                             }
                         }
@@ -178,17 +180,17 @@ class MainActivity : ComponentActivity() {
 
                         composable("booking") {
                             val creator = selectedCreator
-                            if (creator == null) {
+                            val pkg = selectedPackage
+                            if (creator == null || pkg == null) {
                                 LaunchedEffect(Unit) { navController.popBackStack() }
                             } else {
                                 BookingScreen(
                                     creator = creator,
-                                    selectedPackage = selectedPackage,
+                                    selectedPackage = pkg,
                                     onBackClick = { navController.popBackStack() },
                                     onBookingConfirmed = { weddingDate, venue, events, requirements ->
                                         val userId = session.getUserId()
-                                        val pkg = selectedPackage
-                                        if (userId > 0 && pkg != null) {
+                                        if (userId > 0) {
                                             val id = repository.createBooking(
                                                 userId = userId,
                                                 creator = creator,
@@ -218,7 +220,9 @@ class MainActivity : ComponentActivity() {
                                     if (pendingBookingId > 0 && userId > 0) {
                                         repository.recordPayment(pendingBookingId, userId, method, amount)
                                     }
-                                    navController.navigate("success")
+                                    navController.navigate("success") {
+                                        popUpTo("home")
+                                    }
                                 }
                             )
                         }
@@ -229,7 +233,9 @@ class MainActivity : ComponentActivity() {
                                 bookingId = pendingBookingId,
                                 creatorName = selectedCreator?.name.orEmpty(),
                                 onHomeClick = {
-                                    navController.navigate("myBookings") { popUpTo("home") }
+                                    navController.navigate("myBookings") {
+                                        popUpTo("home")
+                                    }
                                 }
                             )
                         }

@@ -108,36 +108,53 @@ fun HomeScreen(
         Text(text = "Top Creators Near You", fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(creatorsList, key = { it.id }) { creator ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(Color.White),
-                    elevation = CardDefaults.cardElevation(3.dp),
-                    onClick = { onCreatorClick(creator) }
+        if (creatorsList.isEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                colors = CardDefaults.cardColors(Color.White)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Text(text = "🔍", fontSize = 32.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "No creators found", fontWeight = FontWeight.Bold)
+                    Text(text = "Try searching with a different keyword", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                }
+            }
+        } else {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(creatorsList, key = { it.id }) { creator ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(Color.White),
+                        elevation = CardDefaults.cardElevation(3.dp),
+                        onClick = { onCreatorClick(creator) }
                     ) {
-                        Text(text = "👤", fontSize = 40.sp)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column {
-                            Text(text = creator.name, fontWeight = FontWeight.Bold)
-                            Text(
-                                text = "⭐ ${creator.rating} | 📍 ${creator.location} | 💼 ${creator.experience}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.Gray
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "Starts from ${creator.startingPrice}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFF4CAF50),
-                                fontWeight = FontWeight.Bold
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "👤", fontSize = 40.sp)
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(text = creator.name, fontWeight = FontWeight.Bold)
+                                Text(
+                                    text = "⭐ ${creator.rating} | 📍 ${creator.location} | 💼 ${creator.experience}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.Gray
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Starts from ${creator.startingPrice}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color(0xFF4CAF50),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
